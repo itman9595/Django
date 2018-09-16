@@ -4,8 +4,8 @@
 <div class="container">
 	<input type="button" id="addTask" value="Add Task">
 	<hr/>
-	{% if task %}
-		<h1>Completed tasks in {{task.list_name}}</h1>
+	{% if task_list %}
+		<h1>Completed tasks in {{task_list.list_name}}</h1>
 			<table style="width:100%" class="table">
 				<tr class="column_names">
 					<th>Task</th>
@@ -14,20 +14,22 @@
 					<th>Owner</th>
 					<th>Mark</th>
 				</tr>
-				{% for t in task %}
-					<tr class="columns">
-						<td id="task">Task {{ t.task_order }}</td>
-						<td>{{ t.created_at|date:"d/m/y" }}</td>
-						<td>{{ t.due_on|date:"d/m/y" }}</td>
-						<td>{{ t.owner }}</td>
-						<td id="mark">
-							{% if t.mark %}
-								Done
-							{% else %}
-								Not Done
-							{% endif %}
-						</td>
-					</tr>
+				{% for ts in task_list.task_set.all %}
+					{% if ts.mark %}
+						<tr class="columns">
+							<td id="task">Task {{ ts.task_order }}</td>
+							<td>{{ ts.created_at|date:"d/m/y" }}</td>
+							<td>{{ ts.due_on|date:"d/m/y" }}</td>
+							<td>{{ ts.owner }}</td>
+							<td id="mark">
+								{% if ts.mark %}
+									Done
+								{% else %}
+									Not Done
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
 				{% endfor %}
 			</table>
 		<input type="button" id="view" value="View completed tasks">

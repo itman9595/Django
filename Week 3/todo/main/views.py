@@ -8,7 +8,7 @@ import datetime
 from .models import Task_List, Task
 
 class IndexView(generic.ListView):
-	template_name = 'main/todo_list.html'
+	template_name = 'main/index.html'
 	task_array = [
 		{'due_on':  datetime.datetime(2018, 9, 21), 'owner': Task.ROLES[0][1], 'mark': True},
 		{'due_on':  datetime.datetime(2018, 9, 23), 'owner': Task.ROLES[0][1], 'mark': False},
@@ -16,21 +16,19 @@ class IndexView(generic.ListView):
 		{'due_on':  datetime.datetime(2018, 11, 5), 'owner': Task.ROLES[0][1], 'mark': True},
 		{'due_on':  datetime.datetime(2018, 12, 3), 'owner': Task.ROLES[1][1], 'mark': False},
 	]
-	
-	Task_List.objects.all().delete()
 
-	# We have to refresh data every time it loads, otherwise new data will be created infinitely, I was not able to find a way to reset the autoincrement
-	tl = Task_List(task_list_name="List 1", created_at=timezone.now())
-	tl.save()
+	# Delete sqllite database in /todo folder before uncommenting it, apply migration, then comment again, in order to avoid problems
 
-	Task.objects.all().delete()
+	# tl = Task_List(task_list_name="List 1", created_at=timezone.now())
+	# tl.save()
 
-	for task in task_array:
-		tl.task_set.create(created_at=timezone.now(), due_on=task['due_on'], owner=task['owner'], mark=task['mark'])
+	# for task in task_array:
+	# 	tl.task_set.create(created_at=timezone.now(), due_on=task['due_on'], owner=task['owner'], mark=task['mark'])
 
-	print("Here: {}".format(tl.task_set.all()))
-	print(tl.id)
-	print(tl.task_list_name)
+	# print("Here: {}".format(tl.task_set.all()))
+	# print(tl.id)
+	# print(tl.task_list_name)
+	print(Task_List.objects.get(pk=1).task_set.all())
 
 	def get_queryset(self):
 		"""
@@ -43,13 +41,18 @@ class IndexView(generic.ListView):
 	context_object_name = 'latest_task_list'
 
 class DetailView(generic.DetailView):
-    model = Task
-    template_name = 'main/completed_todo_list.html'
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """        
-        return Task.objects.filter(
-        	# mark__lte=True,
-            created_at__lte=timezone.now()
-        )
+	model = Task_List
+	template_name = 'main/todo_list.html'
+
+	def get_queryset(self):
+		return Task_List.objects.filter(
+			created_at__lte=timezone.now(),
+		)
+
+class ResultsView(generic.DetailView):
+	model = Task_List
+	template_name = 'main/completed_todo_list.html'
+	def get_queryset(self):
+		return Task_List.objects.filter(
+			created_at__lte=timezone.now(),
+		)
