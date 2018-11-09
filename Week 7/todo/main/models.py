@@ -19,8 +19,6 @@ class Task(models.Model):
 	list_name = models.ForeignKey(Task_List, on_delete=models.CASCADE)
 	task_order = models.AutoField(primary_key=True)
 	created_at = models.DateTimeField('date published')
-    def was_published_recently(self):
-        now = timezone.now()
 		return now - datetime.timedelta(days=1) <= self.created_at <= now
 	due_on = models.DateTimeField('date published')
 	ADMIN = 'ADM'
