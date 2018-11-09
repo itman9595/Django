@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/stylesheet.css' %}">
+<div id="preset">BFDjango Blog</div>
+<div class="container">
+	{% if post %}
+		<h1>Comments for post: {{post.title}}</h1>
+		<hr/>
+			<ul>
+				{% for comment in post.comment_set.all %}
+					<li class="comment">
+						<h2 id="comment_author">Comment Author: {{comment.comment_author}}</h2>
+						<h3 id="comment_title">{{comment.comment_content}}</h3>
+						<p id="comment_date">Created at: {{comment.created_at}}</p>
+					</li>
+				{% endfor %}
+			</ul>
+			<a href="{% url 'main:index' %}">Go back</a>
+	{% else %}
+		<p>No posts are available.</p>
+	{% endif %}
+</div>

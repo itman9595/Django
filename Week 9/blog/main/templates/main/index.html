@@ -1,0 +1,57 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/stylesheet.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<div id="preset">BFDjango Blog</div>
+<div class="navbar navbar-default">
+	<div class="container">
+		<ul class="nav navbar-nav navbar-right">
+			{% if user.is_authenticated %}
+				<li>
+					<h4>Welcome, {{ user.username }}. Thanks for logging in.</h4>
+				</li>
+				<li>
+					<a href ="{% url '_auth:logout' %}">Logout</a>
+				</li>
+			{% else %}
+				<li>
+					<h4>Welcome, new user. Please log in.</h4>
+				</li>
+				<li>
+					<a href ="{% url '_auth:login' %}">Login</a>
+				</li>
+				<li>
+					<a href ="{% url '_auth:register' %}">Register</a>
+				</li>
+			{% endif %}
+		</ul>
+			<h1 style='padding-top: 50px;'>Created Posts</h1>
+			<hr/>
+			{% if posts %}
+				<ul>
+					{% for post in posts %}
+						<li class="post">
+							<h2 id="post_author">Post Author: {{post.post_author}}</h2>
+							<h3 id="post_title">Post Title: {{post.post_title}}</h3>
+							<p id="post_content">{{post.post_content}}</p>
+							<p id="post_date">Created at: {{post.created_at}}</p>
+							<a href="{% url 'main:detail' post.id %}">Go to comments</a>
+						</li>
+					{% endfor %}
+					{% if user.is_authenticated %}
+						<form method='post' action="{% url 'main:post_add' %}" class='post_add_form'>
+							{% csrf_token %}
+							<input type='text' placeholder="Add Title" name='post_title' id='editables' required>
+							<textarea rows='4' cols='170' name='post_content' id='editables' required></textarea>
+							<input type='submit' value='Add Post' id='editables' name="addPostBtn">
+						</form>
+					{% endif %}
+				</ul>
+			{% else %}
+				<p>No posts are available.</p>
+			{% endif %}
+		{% if user.is_authenticated == false %}
+			{% block body %}
+    		{% endblock %}
+		{% endif %}
+	</div>
+</div>
