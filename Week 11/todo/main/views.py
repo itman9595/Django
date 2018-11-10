@@ -14,7 +14,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -24,7 +24,6 @@ app_name = 'main'
 class IsSuperAdmin(IsAuthenticated):
     def has_permission(self, request, view):
         return request.user and request.user.is_superuser
-
 
 class IsStaff(IsAuthenticated):
     def has_permission(self, request, view):
@@ -60,6 +59,9 @@ class IndexView(generic.ListView):
 	authentication_classes = (TokenAuthentication,)
 	permission_classes = (IsAuthenticated,)
 
+	def perform_create(self, serializer):
+		serializer.save(created_by=self.request.user)
+
 	def get_queryset(self):
 		return Task_List.objects.for_user(self.request.user)
 
@@ -91,6 +93,7 @@ class ResultsView(LoginRequiredMixin, generic.DetailView):
 		return Task_List.objects.for_user(self.request.user)
 
 @api_view(['POST'])
+@permission_classes((permissions.AllowAny,))
 def login(request):
 	username = request.data.get('username')
 	password = request.data.get('password')

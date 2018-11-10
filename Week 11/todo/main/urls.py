@@ -17,5 +17,5 @@ urlpatterns = [
     path('<int:pk>/completed/', views.ResultsView.as_view(), name='completed'),
 	# ex: /todos/1/addtask/
     path('<str:list_id>/addtask/', views.addTask, name='add_task'),
-	path('login/', views.login),
+	path('login/', views.login)
 ];
