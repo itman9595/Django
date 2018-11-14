@@ -93,7 +93,6 @@ class ResultsView(LoginRequiredMixin, generic.DetailView):
 		return Task_List.objects.for_user(self.request.user)
 
 @api_view(['POST'])
-@permission_classes((permissions.AllowAny,))
 def login(request):
 	username = request.data.get('username')
 	password = request.data.get('password')
@@ -103,6 +102,7 @@ def login(request):
 	token, created = Token.objects.get_or_create(user=user)
 	return Response({'token': token.key})
 
+@api_view(['GET', 'POST'])
 @csrf_exempt
 def task_list(request):
     """
@@ -121,6 +121,7 @@ def task_list(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+@api_view(['DELETE', 'PUT', 'GET'])
 @csrf_exempt
 def task_list_detail(request, pk):
 	"""

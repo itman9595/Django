@@ -1,0 +1,40 @@
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<div id="preset">BFDjango Advert</div>
+<div class="navbar navbar-default">
+	<div class="container">
+		<ul class="nav navbar-nav navbar-right">
+			{% if user.is_authenticated %}
+				<li>
+					<h4>Welcome, {{ user.username }}. Thanks for logging in.</h4>
+				</li>
+				<li>
+					<a href ="{% url '_auth:logout' %}">Logout</a>
+				</li>
+			{% else %}
+				<li>
+					<h4>Welcome, new user. Please log in.</h4>
+				</li>
+				<li>
+					<a href ="{% url '_auth:login' %}">Login</a>
+				</li>
+				<li>
+					<a href ="{% url '_auth:register' %}">Register</a>
+				</li>
+			{% endif %}
+		</ul>
+		<h1>Created Adverts</h1>
+		{% if advert %}
+			<ul>
+				<li>{{ advert.title }}</li>
+				<li>{{ advert.address }}</li>
+				<li>{{ advert.description }}</li>
+				<li>{{ advert.price }}</li>
+				<li>{{ advert.number_of_views }}</li>
+				<li>{{ advert.owner }}</li>
+			</ul>
+		{% else %}
+			<p>No adverts are available.</p>
+		{% endif %}
+	</div>
+</div>
